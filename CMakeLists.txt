@@ -5,7 +5,7 @@ if($ENV{TRAVIS_BUILD_NUMBER})
     set(PATCH_VERSION $ENV{TRAVIS_BUILD_NUMBER})
 endif()
 
-project(ip_filter VERSION 0.0.${PATCH_VERSION})
+project(allocator VERSION 0.0.${PATCH_VERSION})
 
 set(SOURCE_PATH "${PROJECT_SOURCE_DIR}/src")
 set(TEST_PATH "${PROJECT_SOURCE_DIR}/tests")
