@@ -40,14 +40,16 @@ int main()
 
     std::cout << "-----------------" << std::endl;
     My_List<int> mlst;
-   // mlst.push_back(1);
-//    mlst.push_back(2);
-//    mlst.push_back(3);
+    mlst.push_back(1);
+    mlst.push_back(2);
+    mlst.push_back(4);
 
-//    for (int i = 0; i < mlst.GetSize(); i++)
-//    {
-//        std::cout << mlst[i] << std::endl;
-//    }
+    for (int i = 0; i < mlst.GetSize(); i++)
+    {
+        std::cout << mlst[i] << std::endl;
+    }
+
+    std::cout << mlst[10] << std::endl;
 
     return 0;
 }
