@@ -1,7 +1,60 @@
 #ifndef CONTAINER211807082019_H
 #define CONTAINER211807082019_H
-
+#include <stdexcept>
 #include <iostream>
+
+template<typename T1>
+class Node
+{
+public:
+    Node * pNext;
+    T1 data;
+
+    Node(T1 data = T1(), Node *pNext = nullptr)
+    {
+        this->data = data;
+        this->pNext = pNext;
+    }
+};
+
+template<typename T>
+class My_Iterator
+{
+private:
+    Node<T>* m_node;
+
+public:
+    My_Iterator(Node<T>* p) : m_node(p) {}
+    My_Iterator() : m_node(0) {}
+
+    My_Iterator<T>& operator++()
+    {
+        m_node = m_node->pNext;
+        return *this;
+    }
+
+    My_Iterator<T> operator ++(int)
+    {
+        My_Iterator tmp = *this;
+        ++(*this);
+        return tmp;
+    }
+
+    T operator *()
+    {
+        return m_node->data;
+    }
+
+    bool operator==(const My_Iterator<T>& other) const
+    {
+        return m_node == other.m_node;
+    }
+
+    bool operator!=(const My_Iterator<T>& other) const
+    {
+        return m_node != other.m_node;
+    }
+};
 
 template<typename T>
 class My_List
@@ -16,6 +69,16 @@ public:
     ~My_List()
     {
         clear();
+    }
+
+    My_Iterator<T> begin()
+    {
+        return My_Iterator<T>(this->head);
+    }
+
+    My_Iterator<T> end()
+    {
+        return nullptr;
     }
 
     void push_front(T data)
@@ -71,8 +134,10 @@ public:
     {
         int counter = 0;
         Node<T> *current = this->head;
+
         while (current != nullptr)
         {
+
             if (counter == index)
             {
                 return current->data;
@@ -80,8 +145,7 @@ public:
             current = current->pNext;
             counter++;
         }
-        current = nullptr;
-        return current->data;
+        throw std::out_of_range("out of range!");
     }
 
     //добавление элемента в список по указанному индексу
@@ -129,20 +193,6 @@ public:
 
 
 private:
-    template<typename T1>
-    class Node
-    {
-    public:
-        Node * pNext;
-        T1 data;
-
-        Node(T1 data = T1(), Node *pNext = nullptr)
-        {
-            this->data = data;
-            this->pNext = pNext;
-        }
-    };
-
     int Size;
     Node<T> *head;
 };
