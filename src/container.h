@@ -1,14 +1,25 @@
 #ifndef CONTAINER211807082019_H
 #define CONTAINER211807082019_H
+
 #include <stdexcept>
 #include <iostream>
+#include <memory>
 
 template<typename T1>
 class Node
 {
 public:
-    Node * pNext;
+    Node *pNext;
     T1 data;
+
+//    Node(const Node<T1> &node) :
+//        data(node.data), next(node.pNext) {}
+
+    template<typename ...Args>
+    Node(Args &&...args) : data(std::forward<Args>(args)...)
+    {
+        pNext = nullptr;
+    }
 
     Node(T1 data = T1(), Node *pNext = nullptr)
     {
@@ -21,10 +32,10 @@ template<typename T>
 class My_Iterator
 {
 private:
-    Node<T>* m_node;
+    Node<T> *m_node;
 
 public:
-    My_Iterator(Node<T>* p) : m_node(p) {}
+    My_Iterator(Node<T> *p) : m_node(p) {}
     My_Iterator() : m_node(0) {}
 
     My_Iterator<T>& operator++()
@@ -56,10 +67,11 @@ public:
     }
 };
 
-template<typename T>
+template<typename T, typename My_Allocator = std::allocator<Node<T>>>
 class My_List
 {
 public:
+
     My_List()
     {
         Size = 0;
@@ -97,17 +109,20 @@ public:
 
     void push_back(T data)
     {
-        if (head == nullptr)
+        if (head == nullptr && Size == 0)
         {
-            head = new Node<T>(data);
+            head = allocator.allocate(1);
+            allocator.construct(head, data, &allocator);
+            //head = new Node<T>(data);
         }
         else
         {
             Node<T> *current = this->head;
             while (current->pNext != nullptr)
             {
-                current = current->pNext;
+                current = current->pNext;       
             }
+            std::cout << current << " " << current->data << std::endl;
             current->pNext = new Node<T>(data);
         }
         Size++;
@@ -195,6 +210,7 @@ public:
 private:
     int Size;
     Node<T> *head;
+    My_Allocator allocator;
 };
 
 

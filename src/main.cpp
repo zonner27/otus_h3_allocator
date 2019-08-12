@@ -39,11 +39,11 @@ int main()
 //    }
 
     std::cout << "-----------------" << std::endl;
-    My_List<int> mlst;
-    mlst.push_back(5);
-    mlst.push_back(2);
-    mlst.push_back(4);
-    mlst.push_front(1);
+    My_List<int, my_alloc<Node<int>, 10>> mlst;
+    for (int i = 0; i < 10; i++)
+    {
+        mlst.push_back(i);
+    };
 
     for (auto i = mlst.begin(); i != mlst.end(); i++)
     {
