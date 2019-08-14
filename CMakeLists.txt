@@ -13,13 +13,13 @@ set(TEST_PATH "${PROJECT_SOURCE_DIR}/tests")
 #find_package(Boost COMPONENTS unit_test_framework REQUIRED)
 
 add_executable(allocator
-    ${SOURCE_PATH}/main.cpp)
-#    ${SOURCE_PATH}/allocator.cpp
-#    ${SOURCE_PATH}/container.cpp)
+    ${SOURCE_PATH}/main.cpp
+    ${SOURCE_PATH}/allocator.cpp
+    ${SOURCE_PATH}/container.cpp)
 
-add_library(lallocator ${SOURCE_PATH}/allocator.cpp)
+#add_library(lallocator ${SOURCE_PATH}/allocator.cpp)
 
-add_library(lcontainer ${SOURCE_PATH}/container.cpp)
+#add_library(lcontainer ${SOURCE_PATH}/container.cpp)
 
 #add_executable(test_filter  ${TEST_PATH}/test_filter.cpp)
 
@@ -39,10 +39,10 @@ set_target_properties(
 #        INCLUDE_DIRECTORIES ${SOURCE_PATH}
 #)
 
-target_link_libraries(allocator
-        lallocator
-        lcontainer
-)
+#target_link_libraries(allocator
+#        lallocator
+#        lcontainer
+#)
 
 #target_link_libraries(test_filter#
 #    ${Boost_LIBRARIES}
