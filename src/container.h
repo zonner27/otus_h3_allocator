@@ -3,6 +3,7 @@
 
 #include <stdexcept>
 #include <iostream>
+#include <iterator>
 #include <memory>
 
 template<typename T1>
@@ -15,11 +16,11 @@ public:
 //    Node(const Node<T1> &node) :
 //        data(node.data), next(node.pNext) {}
 
-    template<typename ...Args>
-    Node(Args &&...args) : data(std::forward<Args>(args)...)
-    {
-        pNext = nullptr;
-    }
+//    template<typename ...Args>
+//    Node(Args &&...args) : data(std::forward<Args>(args)...)
+//    {
+//        pNext = nullptr;
+//    }
 
     Node(T1 data = T1(), Node *pNext = nullptr)
     {
@@ -112,7 +113,9 @@ public:
         if (head == nullptr && Size == 0)
         {
             head = allocator.allocate(1);
-            allocator.construct(head, data, &allocator);
+            allocator.construct(head, data);
+            //allocator.construct(head, std::forward<Args>(abs)...);
+            //allocator.construct(head, data, &allocator);
             //head = new Node<T>(data);
         }
         else
