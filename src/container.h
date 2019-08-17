@@ -6,216 +6,162 @@
 #include <iterator>
 #include <memory>
 
-template<typename T1>
-class Node
-{
-public:
-    Node *pNext;
-    T1 data;
-
-//    Node(const Node<T1> &node) :
-//        data(node.data), next(node.pNext) {}
-
-//    template<typename ...Args>
-//    Node(Args &&...args) : data(std::forward<Args>(args)...)
-//    {
-//        pNext = nullptr;
-//    }
-
-    Node(T1 data = T1(), Node *pNext = nullptr)
-    {
-        this->data = data;
-        this->pNext = pNext;
-    }
-};
-
-template<typename T>
-class My_Iterator
-{
-private:
-    Node<T> *m_node;
-
-public:
-    My_Iterator(Node<T> *p) : m_node(p) {}
-    My_Iterator() : m_node(0) {}
-
-    My_Iterator<T>& operator++()
-    {
-        m_node = m_node->pNext;
-        return *this;
-    }
-
-    My_Iterator<T> operator ++(int)
-    {
-        My_Iterator tmp = *this;
-        ++(*this);
-        return tmp;
-    }
-
-    T operator *()
-    {
-        return m_node->data;
-    }
-
-    bool operator==(const My_Iterator<T>& other) const
-    {
-        return m_node == other.m_node;
-    }
-
-    bool operator!=(const My_Iterator<T>& other) const
-    {
-        return m_node != other.m_node;
-    }
-};
-
-template<typename T, typename My_Allocator = std::allocator<Node<T>>>
-class My_List
+template<typename T, typename MyAllocator = std::allocator<T>>
+class MyList
 {
 public:
 
-    My_List()
+    template<typename T1>
+    class Node
     {
-        Size = 0;
+    public:
+        Node *pNext;
+        T1 data;
+
+        Node(T1 data = T1(), Node *pNext = nullptr)
+        {
+            this->data = data;
+            this->pNext = pNext;
+        }
+    };
+
+    using node_type = Node<T>;
+    using allocator_type = typename std::allocator_traits<MyAllocator>::template rebind_alloc<node_type>;
+
+    class My_Iterator
+    {
+    private:
+        node_type *m_node;
+
+    public:
+        My_Iterator(node_type *p) : m_node(p) {}
+        My_Iterator() : m_node(0) {}
+
+        My_Iterator& operator++()
+        {
+            m_node = m_node->pNext;
+            return *this;
+        }
+
+        My_Iterator operator ++(int)
+        {
+            My_Iterator tmp = *this;
+            ++(*this);
+            return tmp;
+        }
+
+        T operator *()
+        {
+            return m_node->data;
+        }
+
+        bool operator==(const My_Iterator& other) const
+        {
+            return m_node == other.m_node;
+        }
+
+        bool operator!=(const My_Iterator& other) const
+        {
+            return m_node != other.m_node;
+        }
+    };
+
+    MyList()
+    {
+        m_size = 0;
         head = nullptr;
     }
 
-    ~My_List()
+    ~MyList()
     {
-        clear();
+        while (m_size)
+            pop_back();
     }
 
-    My_Iterator<T> begin()
+    My_Iterator begin()
     {
-        return My_Iterator<T>(this->head);
+        return My_Iterator(this->head);
     }
 
-    My_Iterator<T> end()
+    My_Iterator end()
     {
-        return nullptr;
+        return My_Iterator(nullptr);
     }
 
-    void push_front(T data)
+    template<typename ...Args>
+    void push_front(Args &&...args)
     {
-        head = new Node<T>(data, head);
-        Size++;
+        auto allocated = m_allocator.allocate(1);
+        m_allocator.construct(allocated, std::forward<Args>(args)..., head);
+        head = allocated;
+        m_size++;
+    }
+
+    template<typename ...Args>
+    void push_back(Args &&...args)
+    {
+        auto allocated = m_allocator.allocate(1);
+        m_allocator.construct(allocated, std::forward<Args>(args)..., nullptr);
+
+        if(head == nullptr)
+        {
+            head = allocated;
+            m_size++;
+        }
+        else
+        {
+            auto current = this->head;
+            while(current->pNext != nullptr)
+            {
+                current = current->pNext;
+            }
+            current->pNext = allocated;
+            m_size++;
+        }
     }
 
     void pop_front()
     {
-        Node<T> *temp = head;
+        node_type *temp = head;
         head = head->pNext;
-        delete temp;
-        Size--;
-    }
-
-    void push_back(T data)
-    {
-        if (head == nullptr && Size == 0)
-        {
-            head = allocator.allocate(1);
-            allocator.construct(head, data);
-            //allocator.construct(head, std::forward<Args>(abs)...);
-            //allocator.construct(head, data, &allocator);
-            //head = new Node<T>(data);
-        }
-        else
-        {
-            Node<T> *current = this->head;
-            while (current->pNext != nullptr)
-            {
-                current = current->pNext;       
-            }
-            std::cout << current << " " << current->data << std::endl;
-            current->pNext = new Node<T>(data);
-        }
-        Size++;
+        m_allocator.destroy(temp);
+        m_allocator.deallocate(temp, 1);
+        m_size--;
     }
 
     void pop_back()
     {
-        removeAt(Size - 1);
+        if (m_size == 1)
+        {
+            m_allocator.destroy(head);
+            m_allocator.deallocate(head, 1);
+            head = nullptr;
+        }
+        else
+        {
+            node_type *current = head;
+            for (int i = m_size; i != 2; i--)
+                current = current->pNext;
+            node_type *todelete = current->pNext;
+            current->pNext= nullptr;
+            m_allocator.destroy(todelete);
+            m_allocator.deallocate(todelete, 1);
+        }
+        m_size--;
     }
 
     void clear()
     {
-        while (Size)
-        {
-            pop_front();
-        }
+        while (m_size)
+            pop_back();
     }
-
-    // получить количество элементов в списке
-    int GetSize() { return Size; }
-
-    // перегруженный оператор []
-    T& operator[](const int index)
-    {
-        int counter = 0;
-        Node<T> *current = this->head;
-
-        while (current != nullptr)
-        {
-
-            if (counter == index)
-            {
-                return current->data;
-            }
-            current = current->pNext;
-            counter++;
-        }
-        throw std::out_of_range("out of range!");
-    }
-
-    //добавление элемента в список по указанному индексу
-    void insert(T data, int index)
-    {
-        if (index == 0)
-        {
-            push_front(data);
-        }
-        else
-        {
-            Node<T> *previous = this->head;
-            for (int i = 0; i < index - 1; i++)
-            {
-                previous = previous->pNext;
-            }
-
-            Node<T> *newNode = new Node<T>(data, previous->pNext);
-            previous->pNext = newNode;
-            Size++;
-        }
-    }
-
-    //удаление элемента в списке по указанному индексу
-    void removeAt(int index)
-    {
-        if (index == 0)
-        {
-            pop_front();
-        }
-        else
-        {
-            Node<T> *previous = this->head;
-            for (int i = 0; i < index - 1; i++)
-            {
-                previous = previous->pNext;
-            }
-
-            Node<T> *toDelete = previous->pNext;
-            previous->pNext = toDelete->pNext;
-            delete toDelete;
-            Size--;
-        }
-    }
-
 
 private:
-    int Size;
+    int m_size;
     Node<T> *head;
-    My_Allocator allocator;
+    allocator_type m_allocator;
+
 };
 
 
-#include "container.cpp"
 #endif //  CONTAINER211807082019_H

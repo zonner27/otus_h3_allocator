@@ -27,13 +27,10 @@ struct my_alloc
     {      
         if (m_memory == nullptr)
         {
-            auto p = std::malloc(n * sizeof(value_type) * count);    //auto p
+            auto p = std::malloc(n * sizeof(value_type) * count);
             if (!p)
                 throw std::bad_alloc();
-            //std::cout << "p = " << p << std::endl;
-            //std::cout << "Allocated = " << n * count << std::endl;
             m_memory = reinterpret_cast<pointer>(p);
-            //std::cout << m_memory << std::endl;
             return m_memory;
         }
         else
@@ -41,7 +38,6 @@ struct my_alloc
             m_count++;
             if (m_count >= count)
                 throw std::bad_alloc();
-            //std::cout << (m_memory + m_count) << std::endl;
             return (m_memory + m_count);
         }
         return m_memory;
@@ -49,10 +45,8 @@ struct my_alloc
 
     void deallocate(pointer p, [[maybe_unused]] std::size_t n)
     {
-        //std::cout << "p = " << p << " m_count " << m_count << std::endl;
         if (m_memory != nullptr && m_count == 0)
         {
-            //std::cout << "Deallocated " << std::endl;
             std::free(p);
             m_memory = nullptr;
         }
@@ -63,19 +57,17 @@ struct my_alloc
     template<typename U, typename ...Args>
     void construct(U *p, Args &&...args)
     {
-        //std::cout << "Called construct " << std::endl;
         new(p) U(std::forward<Args>(args)...);
     }
 
     void destroy(pointer p)
     {
-        //std::cout << "Called destroy\n";
         p->~T();
     }
+
 private:
     pointer m_memory;
     std::size_t m_count;
-
 };
 
 
