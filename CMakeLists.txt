@@ -10,59 +10,49 @@ project(allocator VERSION 0.0.${PATCH_VERSION})
 set(SOURCE_PATH "${PROJECT_SOURCE_DIR}/src")
 set(TEST_PATH "${PROJECT_SOURCE_DIR}/tests")
 
-#find_package(Boost COMPONENTS unit_test_framework REQUIRED)
+find_package(Boost COMPONENTS unit_test_framework REQUIRED)
 
 add_executable(allocator
     ${SOURCE_PATH}/main.cpp
     ${SOURCE_PATH}/allocator.cpp
     ${SOURCE_PATH}/container.cpp)
 
-#add_library(lallocator ${SOURCE_PATH}/allocator.cpp)
-
-#add_library(lcontainer ${SOURCE_PATH}/container.cpp)
-
-#add_executable(test_filter  ${TEST_PATH}/test_filter.cpp)
+add_executable(test_alloc  ${TEST_PATH}/test_alloc.cpp)
 
 set_target_properties(
     allocator
-#    test_filter
+    test_alloc
     PROPERTIES
         CXX_STANDARD 14
         CXX_STANDARD_REQUIRED ON
 )
 
-#set_target_properties(
-#    test_filter
-#    PROPERTIES
-#        COMPILE_DEFINITIONS BOOST_TEST_DYN_LINK
-#        INCLUDE_DIRECTORIES ${Boost_INCLUDE_DIR}
-#        INCLUDE_DIRECTORIES ${SOURCE_PATH}
-#)
+set_target_properties(
+    test_alloc
+    PROPERTIES
+        COMPILE_DEFINITIONS BOOST_TEST_DYN_LINK
+        INCLUDE_DIRECTORIES ${Boost_INCLUDE_DIR}
+        INCLUDE_DIRECTORIES ${SOURCE_PATH}
+)
 
-#target_link_libraries(allocator
-#        lallocator
-#        lcontainer
-#)
-
-#target_link_libraries(test_filter#
-#    ${Boost_LIBRARIES}
-#    lib
-#)
+target_link_libraries(test_alloc
+    ${Boost_LIBRARIES}
+)
 
 if (MSVC)
     target_compile_options(allocator PRIVATE
         /W4
     )
-#    target_compile_options(test_filter PRIVATE
-#       /W4
-#    )
+    target_compile_options(test_alloc PRIVATE
+       /W4
+    )
 else ()
     target_compile_options(allocator PRIVATE
         -Wall -Wextra -pedantic -Werror
     )
-#   target_compile_options(test_filter PRIVATE
-#       -Wall -Wextra -pedantic -Werror
-#    )
+   target_compile_options(test_alloc PRIVATE
+       -Wall -Wextra -pedantic -Werror
+    )
 endif()
 
 
@@ -79,10 +69,7 @@ set(CPACK_PACKAGE_CONTACT zonner2785@gmail.com)
 
 include(CPack)
 
-#enable_testing()
+enable_testing()
 
-#add_test(test_sort test_filter)
-#add_test(test_filter_1 test_filter)
-#add_test(test_filter_46_70 test_filter)
-#add_test(test_filter_46_any test_filter)
+add_test(test_container test_alloc)
 
