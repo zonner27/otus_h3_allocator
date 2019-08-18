@@ -55,8 +55,6 @@ else ()
     )
 endif()
 
-
-
 install(TARGETS allocator RUNTIME DESTINATION bin)
 
 set(CPACK_GENERATOR DEB)
