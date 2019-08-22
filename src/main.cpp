@@ -25,9 +25,12 @@ int main()
         std::cout << it->first << " " << it->second << std::endl;
 
     //map with my allocator
-    std::map<int, int, std::less<int>, my_alloc<std::pair<const int, int>, 10>> map_myallocator;
+    std::map<int, int, std::less<int>, My_Alloc<std::pair<const int, int>, 10>> map_myallocator;
     for(int i = 0; i < 10; ++i)
         map_myallocator.insert(std::make_pair(i, factorial(i)));
+
+    map_myallocator.erase(0);
+    map_myallocator.insert(std::make_pair(11, factorial(11)));
 
     for(auto it = map_myallocator.begin(); it != map_myallocator.end(); ++it)
         std::cout << it->first << " " << it->second << std::endl;
@@ -41,7 +44,7 @@ int main()
         std::cout << *i << std::endl;
 
     //my list with my allocator
-    MyList<int, my_alloc<int, 10>> mlsta;
+    MyList<int, My_Alloc<int, 10>> mlsta;
     for (int i = 0; i < 10; i++)
         mlsta.push_back(i);
 

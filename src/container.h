@@ -11,21 +11,20 @@ class MyList
 {
 public:
 
-    template<typename T1>
     class Node
     {
     public:
         Node *pNext;
-        T1 data;
+        T data;
 
-        Node(T1 data = T1(), Node *pNext = nullptr)
+        Node(T data = T(), Node *pNext = nullptr)
         {
             this->data = data;
             this->pNext = pNext;
         }
     };
 
-    using node_type = Node<T>;
+    using node_type = Node;
     using allocator_type = typename std::allocator_traits<MyAllocator>::template rebind_alloc<node_type>;
 
     class My_Iterator
@@ -158,7 +157,7 @@ public:
 
 private:
     int m_size;
-    Node<T> *head;
+    Node *head;
     allocator_type m_allocator;
 
 };
