@@ -1,16 +1,13 @@
 #ifndef CONTAINER211807082019_H
 #define CONTAINER211807082019_H
 
-#include <stdexcept>
 #include <iostream>
-#include <iterator>
-#include <memory>
 
 template<typename T, typename MyAllocator = std::allocator<T>>
 class MyList
 {
-public:
 
+private:
     class Node
     {
     public:
@@ -26,6 +23,13 @@ public:
 
     using node_type = Node;
     using allocator_type = typename std::allocator_traits<MyAllocator>::template rebind_alloc<node_type>;
+
+    int m_size;
+    Node *head;
+    allocator_type m_allocator;
+
+
+public:
 
     class My_Iterator
     {
@@ -155,10 +159,27 @@ public:
             pop_back();
     }
 
-private:
-    int m_size;
-    Node *head;
-    allocator_type m_allocator;
+    int size()
+    {
+        return m_size;
+    }
+
+    T front()
+    {
+        return head->data;
+    }
+
+    T back()
+    {
+        auto current = this->head;
+        while(current->pNext != nullptr)
+        {
+            current = current->pNext;
+        }
+        return current->data;
+    }
+
+
 
 };
 

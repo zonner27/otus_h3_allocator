@@ -29,9 +29,6 @@ int main()
     for(int i = 0; i < 10; ++i)
         map_myallocator.insert(std::make_pair(i, factorial(i)));
 
-    map_myallocator.erase(0);
-    map_myallocator.insert(std::make_pair(11, factorial(11)));
-
     for(auto it = map_myallocator.begin(); it != map_myallocator.end(); ++it)
         std::cout << it->first << " " << it->second << std::endl;
 
@@ -50,7 +47,6 @@ int main()
 
     for (auto i = mlsta.begin(); i != mlsta.end(); i++)
         std::cout << *i << std::endl;
-
 
     return 0;
 }

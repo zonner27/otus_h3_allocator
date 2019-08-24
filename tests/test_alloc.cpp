@@ -20,4 +20,16 @@ BOOST_AUTO_TEST_CASE(test_container)
     BOOST_REQUIRE(*(++it) == 3);
 }
 
+BOOST_AUTO_TEST_CASE(test_alloc)
+{
+    MyList<int, My_Alloc<int, 3>> mlsta;
+    mlsta.push_back(1);
+    mlsta.push_back(2);
+    mlsta.push_back(3);
+    auto it = mlsta.begin();
+    BOOST_REQUIRE(*it == 1);
+    BOOST_REQUIRE(*(++it) == 2);
+    BOOST_REQUIRE(*(++it) == 3);
+}
+
 BOOST_AUTO_TEST_SUITE_END()
