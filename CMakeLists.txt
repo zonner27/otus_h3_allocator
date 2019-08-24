@@ -70,4 +70,5 @@ include(CPack)
 enable_testing()
 
 add_test(test_container test_alloc)
+add_test(test_alloc test_alloc)
 
