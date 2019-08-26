@@ -37,7 +37,7 @@ struct My_Alloc
         if (!m_memory)
             throw std::bad_alloc();
 
-        pointer res;
+        pointer res = nullptr;
 
         for (std::size_t i = 0; i < count; ++i)
         {
