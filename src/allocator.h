@@ -2,6 +2,7 @@
 #define ALLOCATOR211807082019_H
 
 #include <iostream>
+#include <bitset>
 
 template <class T, std::size_t count>
 struct My_Alloc
@@ -20,6 +21,7 @@ struct My_Alloc
         using other = My_Alloc<U, count>;
     };
 
+
     pointer allocate(std::size_t n)
     {
 
@@ -35,11 +37,19 @@ struct My_Alloc
         if (!m_memory)
             throw std::bad_alloc();
 
-        pointer res = m_memory + m_count;
-        m_count += n;
+        pointer res;
 
+        for (int i = 0; i < 10; ++i)
+        {
+            if (m_b[i] == 0)
+            {
+                res = m_memory + i;
+                m_count += n;
+                m_b.set(i);
+                break;
+            }
+        }
         return res;
-
     }
 
     void deallocate(pointer p, [[maybe_unused]] std::size_t n)
@@ -48,9 +58,13 @@ struct My_Alloc
             return;
 
         m_count -= n;
+        for (int i = 0; i < 10; ++i)
+        {
+            if ((m_memory + i) == p)
+                m_b.reset(i);
+        }
         if (m_count != 0)
             return;
-
         std::free(m_memory);
         m_memory = nullptr;
     }
@@ -69,6 +83,8 @@ struct My_Alloc
 private:
     pointer m_memory;
     std::size_t m_count;
+    std::bitset<10> m_b;
+
 };
 
 
