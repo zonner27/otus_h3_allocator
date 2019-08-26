@@ -39,7 +39,7 @@ struct My_Alloc
 
         pointer res;
 
-        for (int i = 0; i < 10; ++i)
+        for (std::size_t i = 0; i < count; ++i)
         {
             if (m_b[i] == 0)
             {
