@@ -9,9 +9,6 @@ struct My_Alloc
 {
     using value_type = T;
     using pointer = T*;
-    using const_pointer = const T*;
-    using reference = T&;
-    using const_reference = const T&;
 
     My_Alloc() : m_memory(nullptr), m_count(0) {};
 
@@ -21,10 +18,8 @@ struct My_Alloc
         using other = My_Alloc<U, count>;
     };
 
-
     pointer allocate(std::size_t n)
     {
-
         if ((m_count + n) > count)
             throw std::bad_alloc();
 
@@ -58,7 +53,7 @@ struct My_Alloc
             return;
 
         m_count -= n;
-        for (int i = 0; i < 10; ++i)
+        for (std::size_t i = 0; i < count; ++i)
         {
             if ((m_memory + i) == p)
                 m_b.reset(i);
@@ -83,10 +78,7 @@ struct My_Alloc
 private:
     pointer m_memory;
     std::size_t m_count;
-    std::bitset<10> m_b;
-
+    std::bitset<count> m_b;
 };
-
-
 
 #endif // ALLOCATOR211807082019_H

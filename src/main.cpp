@@ -3,14 +3,11 @@
 #include "allocator.h"
 #include "container.h"
 
-
 int factorial(int n)
 {
     int result = 1;
     for (int i = 1; i <= n; i++)
-    {
         result *= i;
-    }
     return result;
 }
 
@@ -52,7 +49,6 @@ int main()
     } catch (const std::exception &e) {
         std::cerr << e.what() << std::endl;
     }
-
 
     return 0;
 }

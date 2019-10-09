@@ -6,7 +6,6 @@
 template<typename T, typename MyAllocator = std::allocator<T>>
 class MyList
 {
-
 private:
     class Node
     {
@@ -28,9 +27,7 @@ private:
     Node *head;
     allocator_type m_allocator;
 
-
 public:
-
     class My_Iterator
     {
     private:
@@ -178,10 +175,6 @@ public:
         }
         return current->data;
     }
-
-
-
 };
-
 
 #endif //  CONTAINER211807082019_H
